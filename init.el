@@ -71,6 +71,10 @@
 ;;   (global-evil-leader-mode)
 ;;   (evil-leader/set-leader "SPC"))
 
+;; ---------------------------------------------------
+;; evil-surround
+;; ---------------------------------------------------
+(use-package evil-surround)
 
 ;; ---------------------------------------------------
 ;; all-the-icons
@@ -89,6 +93,7 @@
 ;; General
 ;; ---------------------------------------------------
 
+(savehist-mode t)
 
 (setq inhibit-startup-message t)
 (setq inhibit-startup-screen t)
@@ -193,13 +198,36 @@
 ;; (load-theme 'wombat)
 ;; (load-theme 'tango-dark)
 ;; (load-theme 'vscode-dark-plus)
-;; (load-theme 'doom-dark+)
+(load-theme 'doom-dark+)
 ;; (load-theme 'doom-palenight t)
-(load-theme 'doom-dracula t)
+;; (load-theme 'doom-dracula t)
 
 (use-package vscode-dark-plus-theme)
 
 
+;; ---------------------------------------------------
+;; auto-highlight-symbol
+;; ---------------------------------------------------
+(use-package auto-highlight-symbol)
+(global-auto-highlight-symbol-mode t)
+
+;; ---------------------------------------------------
+;; highlight-indent-guides
+;; ---------------------------------------------------
+(use-package highlight-indent-guides)
+(add-hook 'prog-mode-hook 'highlight-indent-guides-mode)
+(setq highlight-indent-guides-method 'character)
+
+;; ---------------------------------------------------
+;; ace-window
+;; ---------------------------------------------------
+;; (use-package ace-window) 
+
+;; ---------------------------------------------------
+;; winum
+;; ---------------------------------------------------
+(use-package winum)
+(winum-mode t)
 
 ;; ---------------------------------------------------
 ;; Key
@@ -239,12 +267,6 @@
 (setq company-idle-delay 0)
 (define-key company-active-map (kbd "C-n") 'company-select-next)
 (define-key company-active-map (kbd "C-p") 'company-select-previous)
-
-
-;; ---------------------------------------------------
-;; Vertico
-;; ---------------------------------------------------
-(savehist-mode t)
 
 ;; ---------------------------------------------------
 ;; Vertico
@@ -410,9 +432,114 @@ Supports exporting consult-grep to wgrep, file to wdeired, and consult-location 
 ;; ---------------------------------------------------
 ;; Treemacs
 ;; ---------------------------------------------------
-(use-package treemacs)
-(treemacs-mode t)
-(setq treemacs--width-is-locked nil)
+;; (use-package treemacs)
+;; (treemacs-mode t)
+;; (setq treemacs--width-is-locked nil)
+
+(use-package treemacs
+  :ensure t
+  :defer t
+  :init
+  (with-eval-after-load 'winum
+    (define-key winum-keymap (kbd "M-0") #'treemacs-select-window))
+  :config
+  (progn
+    (setq treemacs-collapse-dirs                   (if treemacs-python-executable 3 0)
+          treemacs-deferred-git-apply-delay        0.5
+          treemacs-directory-name-transformer      #'identity
+          treemacs-display-in-side-window          t
+          treemacs-eldoc-display                   'simple
+          treemacs-file-event-delay                5000
+          treemacs-file-extension-regex            treemacs-last-period-regex-value
+          treemacs-file-follow-delay               0.2
+          treemacs-file-name-transformer           #'identity
+          treemacs-follow-after-init               t
+          treemacs-expand-after-init               t
+          treemacs-find-workspace-method           'find-for-file-or-pick-first
+          treemacs-git-command-pipe                ""
+          treemacs-goto-tag-strategy               'refetch-index
+          treemacs-indentation                     2
+          treemacs-indentation-string              " "
+          treemacs-is-never-other-window           nil
+          treemacs-max-git-entries                 5000
+          treemacs-missing-project-action          'ask
+          treemacs-move-forward-on-expand          nil
+          treemacs-no-png-images                   nil
+          treemacs-no-delete-other-windows         t
+          treemacs-project-follow-cleanup          nil
+          treemacs-persist-file                    (expand-file-name ".cache/treemacs-persist" user-emacs-directory)
+          treemacs-position                        'left
+          treemacs-read-string-input               'from-child-frame
+          treemacs-recenter-distance               0.1
+          treemacs-recenter-after-file-follow      nil
+          treemacs-recenter-after-tag-follow       nil
+          treemacs-recenter-after-project-jump     'always
+          treemacs-recenter-after-project-expand   'on-distance
+          treemacs-litter-directories              '("/node_modules" "/.venv" "/.cask")
+          treemacs-show-cursor                     nil
+          treemacs-show-hidden-files               t
+          treemacs-silent-filewatch                nil
+          treemacs-silent-refresh                  nil
+          treemacs-sorting                         'alphabetic-asc
+          treemacs-select-when-already-in-treemacs 'move-back
+          treemacs-space-between-root-nodes        t
+          treemacs-tag-follow-cleanup              t
+          treemacs-tag-follow-delay                1.5
+          treemacs-text-scale                      nil
+          treemacs-user-mode-line-format           nil
+          treemacs-user-header-line-format         nil
+          treemacs-wide-toggle-width               70
+          treemacs-width                           35
+          treemacs-width-increment                 1
+          treemacs-width-is-initially-locked       t
+          treemacs-workspace-switch-cleanup        nil)
+
+    ;; The default width and height of the icons is 22 pixels. If you are
+    ;; using a Hi-DPI display, uncomment this to double the icon size.
+    ;;(treemacs-resize-icons 44)
+
+    (treemacs-follow-mode t)
+    (treemacs-filewatch-mode t)
+    (treemacs-fringe-indicator-mode 'always)
+
+    (pcase (cons (not (null (executable-find "git")))
+                 (not (null treemacs-python-executable)))
+      (`(t . t)
+       (treemacs-git-mode 'deferred))
+      (`(t . _)
+       (treemacs-git-mode 'simple)))
+
+    (treemacs-hide-gitignored-files-mode nil))
+  :bind
+  (:map global-map
+        ("M-0"       . treemacs-select-window)
+        ("C-x t 1"   . treemacs-delete-other-windows)
+        ("C-x t t"   . treemacs)
+        ("C-x t d"   . treemacs-select-directory)
+        ("C-x t B"   . treemacs-bookmark)
+        ("C-x t C-t" . treemacs-find-file)
+        ("C-x t M-t" . treemacs-find-tag)))
+
+(use-package treemacs-evil
+  :after (treemacs evil)
+  :ensure t)
+
+(use-package treemacs-projectile
+  :after (treemacs projectile)
+  :ensure t)
+
+(use-package treemacs-icons-dired
+  :hook (dired-mode . treemacs-icons-dired-enable-once)
+  :ensure t)
+
+(use-package treemacs-magit
+  :after (treemacs magit)
+  :ensure t)
+
+(use-package treemacs-persp ;;treemacs-perspective if you use perspective.el vs. persp-mode
+  :after (treemacs persp-mode) ;;or perspective vs. persp-mode
+  :ensure t
+  :config (treemacs-set-scope-type 'Perspectives))
 
 
 ;; ---------------------------------------------------
@@ -570,27 +697,33 @@ Supports exporting consult-grep to wgrep, file to wdeired, and consult-location 
  :states '(normal)
  :prefix "SPC"
  :non-normal-prefix "M-SPC"
-  "'" '(iterm-focus :which-key "iterm")
-  "?" '(iterm-goto-filedir-or-home :which-key "iterm - goto dir")
-  "/" '(counsel-ag :wich-key "ag")
+  "'"   '(iterm-focus :which-key "iterm")
+  "?"   '(iterm-goto-filedir-or-home :which-key "iterm - goto dir")
+  "/"   '(counsel-ag :wich-key "ag")
   "TAB" '(evil-switch-to-windows-last-buffer :which-key "prev buffer")
-  "." '(avy-goto-word-or-subword-1  :which-key "go to word")
+  "."   '(avy-goto-word-or-subword-1  :which-key "go to word")
   "SPC" '(counsel-M-x :which-key "M-x")
-  "a" '(hydra-launcher/body :which-key "Applications")
-  "b" '(hydra-buffer/body t :which-key "Buffer")
-  "c" '(:ignore t :which-key "Comment")
-  "cl" '(comment-or-uncomment-region-or-line :which-key "comment line")
-  "w" '(hydra-window/body :which-key "Window")
-  "f" '(:ignore t :which-key "Files")
+  "a"   '(hydra-launcher/body :which-key "Applications")
+  "b"   '(hydra-buffer/body t :which-key "Buffer")
+  "c"   '(:ignore t :which-key "Comment")
+  "cl"  '(comment-or-uncomment-line :which-key "comment line")
+  ;; "w"   '(hydra-window/body :which-key "Window")
 
-  "fd" '(counsel-git :which-key "find in git dir")
-  "fr" '(consult-recent-file :which-key "consult-recent-file")
-  ;; "g" '(:keymap magit-mode-map :wk "Magit")
-  "p" '(:keymap projectile-command-map :wk "Projectile")
+  "f"   '(:ignore t :which-key "Files")
+  "fd"  '(counsel-git :which-key "find in git dir")
+  "fr"  '(consult-recent-file :which-key "consult-recent-file")
 
-  "r" '(keymap rg-mode-map :wk "Ripgrep")
-  "s" '(keymap isearch-mode-map :wk "Search")
+  ;; "g"   '(:keymap magit-mode-map :wk "Magit")
+
+  ;; "o"   '(:keymap org-mode-map :wk "Org")
+  "p"   '(:keymap projectile-command-map :wk "Projectile")
+
+  "r"   '(:keymap rg-mode-map :wk "Ripgrep")
   ;; TODO search
+  "s"   '(:keymap isearch-mode-map :wk "Search")
+  "t"   '(:which-key "Toggles")
+
+  "w"   '(:ignore t :which-key "Windows")
   )
 
 
@@ -611,7 +744,7 @@ Supports exporting consult-grep to wgrep, file to wdeired, and consult-location 
  '(custom-safe-themes
    '("835868dcd17131ba8b9619d14c67c127aa18b90a82438c8613586331129dda63" "0466adb5554ea3055d0353d363832446cd8be7b799c39839f387abb631ea0995" "a0be7a38e2de974d1598cf247f607d5c1841dbcef1ccd97cded8bea95a7c7639" "1bddd01e6851f5c4336f7d16c56934513d41cc3d0233863760d1798e74809b4b" "47db50ff66e35d3a440485357fb6acb767c100e135ccdf459060407f8baea7b2" "1d5e33500bc9548f800f9e248b57d1b2a9ecde79cb40c0b1398dec51ee820daf" "a226e096b9c4924c93b920ba50e545fb2d37c6d95d6b62b44e62cb6f03b081fa" default))
  '(package-selected-packages
-   '(rg hungry-delete tabbar consult-projectile tree-sitter treemacs magit hydra projectile general doom-themes helpful vscode-dark-plus-theme which-key rainbow-delimiters doom-modeline command-log-mode use-package consult embark marginalia orderless vertico keycast company)))
+   '(winum highlight-indent-guides evil-surround auto-highlight-symbol rg hungry-delete tabbar consult-projectile tree-sitter treemacs magit hydra projectile general doom-themes helpful vscode-dark-plus-theme which-key rainbow-delimiters doom-modeline command-log-mode use-package consult embark marginalia orderless vertico keycast company)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
