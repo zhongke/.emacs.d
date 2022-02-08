@@ -91,15 +91,16 @@
 
 ;; ---------------------------------------------------
 ;; General
+;; ui
 ;; ---------------------------------------------------
-
 (savehist-mode t)
 
 (setq inhibit-startup-message t)
 (setq inhibit-startup-screen t)
 
 (column-number-mode)
-(global-linum-mode t)
+(global-display-line-numbers-mode t)
+(setq display-line-numbers-type t)
 (dolist (mode '(
                 org-mode-hook
                 term-mode-hook
@@ -191,6 +192,42 @@
 (set-face-attribute 'default nil :font "Source Code pro" :height 180)
 
 ;; ---------------------------------------------------
+;; dashboard
+;; ---------------------------------------------------
+(use-package dashboard
+  :ensure t
+  :config
+  (dashboard-setup-startup-hook))
+
+;; (setq initial-buffer-choice (lambda () (get-buffer "*dashboard*")))
+;; Set the title
+(setq dashboard-banner-logo-title "Welcome to Emacs Dashboard")
+;; Set the banner
+(setq dashboard-startup-banner [VALUE])
+;; Value can be
+;; 'official which displays the official emacs logo
+;; 'logo which displays an alternative emacs logo
+;; 1, 2 or 3 which displays one of the text banners
+;; "path/to/your/image.gif", "path/to/your/image.png" or "path/to/your/text.txt" which displays whatever gif/image/text you would prefer
+
+;; Content is not centered by default. To center, set
+(setq dashboard-center-content t)
+
+;; To disable shortcut "jump" indicators for each section, set
+(setq dashboard-show-shortcuts nil)
+(setq dashboard-items '((recents  . 10)
+                        (bookmarks . 5)
+                        (projects . 5)
+                        (agenda . 5)
+                        (registers . 5)))
+
+(setq dashboard-set-heading-icons t)
+(setq dashboard-set-file-icons t)
+(setq dashboard-set-navigator t)
+(setq dashboard-set-init-info t)
+(setq dashboard-set-footer nil)
+
+;; ---------------------------------------------------
 ;; Theme
 ;; ---------------------------------------------------
 (use-package doom-themes)
@@ -198,7 +235,7 @@
 ;; (load-theme 'wombat)
 ;; (load-theme 'tango-dark)
 ;; (load-theme 'vscode-dark-plus)
-(load-theme 'doom-dark+)
+(load-theme 'doom-dark+ t)
 ;; (load-theme 'doom-palenight t)
 ;; (load-theme 'doom-dracula t)
 
@@ -428,6 +465,12 @@ Supports exporting consult-grep to wgrep, file to wdeired, and consult-location 
 
 ;;(use-package evil-magit
 ;;  :after magit)
+
+;; ---------------------------------------------------
+;; ranger
+;; ---------------------------------------------------
+(use-package ranger) 
+
 
 ;; ---------------------------------------------------
 ;; Treemacs
@@ -697,6 +740,9 @@ Supports exporting consult-grep to wgrep, file to wdeired, and consult-location 
  :states '(normal)
  :prefix "SPC"
  :non-normal-prefix "M-SPC"
+  "1"   '(winum-select-window-1 :which-key "window 1")
+  "2"   '(winum-select-window-2 :which-key "window 2")
+  "3"   '(winum-select-window-3 :which-key "window 3")
   "'"   '(iterm-focus :which-key "iterm")
   "?"   '(iterm-goto-filedir-or-home :which-key "iterm - goto dir")
   "/"   '(counsel-ag :wich-key "ag")
@@ -707,11 +753,11 @@ Supports exporting consult-grep to wgrep, file to wdeired, and consult-location 
   "b"   '(hydra-buffer/body t :which-key "Buffer")
   "c"   '(:ignore t :which-key "Comment")
   "cl"  '(comment-or-uncomment-line :which-key "comment line")
-  ;; "w"   '(hydra-window/body :which-key "Window")
 
   "f"   '(:ignore t :which-key "Files")
   "fd"  '(counsel-git :which-key "find in git dir")
   "fr"  '(consult-recent-file :which-key "consult-recent-file")
+  "ft"  '(treemacs :which-key "treemacs")
 
   ;; "g"   '(:keymap magit-mode-map :wk "Magit")
 
@@ -721,10 +767,31 @@ Supports exporting consult-grep to wgrep, file to wdeired, and consult-location 
   "r"   '(:keymap rg-mode-map :wk "Ripgrep")
   ;; TODO search
   "s"   '(:keymap isearch-mode-map :wk "Search")
+
   "t"   '(:which-key "Toggles")
 
+
   "w"   '(:ignore t :which-key "Windows")
+  "wd"  '(delete-window :which-key "delete-window")
+  "wo"  '(delete-other-windows :which-key "delete-other-windows")
+  "wv"  '(evil-window-vsplit :which-key "evil-window-vsplit")
+  "ws"  '(evil-window-split :which-key "evil-window-split")
   )
+
+;; ---------------------------------------------------
+;; language
+;; ---------------------------------------------------
+(use-package yaml-mode
+  :ensure t
+  :config
+  (setq yaml-indent-offset t))
+
+;; ---------------------------------------------------
+;; modern-cpp-font-lock
+;; ---------------------------------------------------
+(use-package modern-cpp-font-lock
+  :ensure t)
+
 
 
 
@@ -744,7 +811,7 @@ Supports exporting consult-grep to wgrep, file to wdeired, and consult-location 
  '(custom-safe-themes
    '("835868dcd17131ba8b9619d14c67c127aa18b90a82438c8613586331129dda63" "0466adb5554ea3055d0353d363832446cd8be7b799c39839f387abb631ea0995" "a0be7a38e2de974d1598cf247f607d5c1841dbcef1ccd97cded8bea95a7c7639" "1bddd01e6851f5c4336f7d16c56934513d41cc3d0233863760d1798e74809b4b" "47db50ff66e35d3a440485357fb6acb767c100e135ccdf459060407f8baea7b2" "1d5e33500bc9548f800f9e248b57d1b2a9ecde79cb40c0b1398dec51ee820daf" "a226e096b9c4924c93b920ba50e545fb2d37c6d95d6b62b44e62cb6f03b081fa" default))
  '(package-selected-packages
-   '(winum highlight-indent-guides evil-surround auto-highlight-symbol rg hungry-delete tabbar consult-projectile tree-sitter treemacs magit hydra projectile general doom-themes helpful vscode-dark-plus-theme which-key rainbow-delimiters doom-modeline command-log-mode use-package consult embark marginalia orderless vertico keycast company)))
+   '(modern-cpp-font-lock ranger dashboard winum highlight-indent-guides evil-surround auto-highlight-symbol rg hungry-delete tabbar consult-projectile tree-sitter treemacs magit hydra projectile general doom-themes helpful vscode-dark-plus-theme which-key rainbow-delimiters doom-modeline command-log-mode use-package consult embark marginalia orderless vertico keycast company)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
