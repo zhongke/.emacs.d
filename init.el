@@ -6,6 +6,11 @@
 ;; consult-ripgrep
 ;; -- keyword -g *.cc
 ;; -- keyword -t cpp 
+;; C-[
+;; C-t
+;; M-?
+;; M-.
+;; M-,
 
 ;; ---------------------------------------------------
 ;; Package
