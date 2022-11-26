@@ -12,12 +12,13 @@
 ;; ---------------------------------------------------
 (require 'package)
 (setq package-archives '(
-                         ("gnu" . "http://elpa.zilongshanren.com/gnu/")
-                         ("melpa" . "http://elpa.zilongshanren.com/melpa/")
+			 ("gnu"   . "http://1.15.88.122/gnu/")
+                         ("melpa" . "http://1.15.88.122/melpa/")
+			 ("gnu-devel" "https://elpa.gnu.org/devel/")
 
-                         ;; ("melpa" . "https://melpa.org/packages/")
-                         ;; ("org"   . "https://orgmode.org/elpa/")
-                         ;; ("elpa"  . "https://elpa.gnu.org/packags/")
+                         ("melpa" . "https://melpa.org/packages/")
+                         ("org"   . "https://orgmode.org/elpa/")
+                         ("elpa"  . "https://elpa.gnu.org/packags/")
 
                          ))
 (package-initialize)
@@ -94,6 +95,10 @@
 ;; ---------------------------------------------------
 (use-package helpful)
 
+;; ---------------------------------------------------
+;; tree-sitter
+;; ---------------------------------------------------
+(use-package tree-sitter)
 
 
 
@@ -212,7 +217,7 @@
 ;; Set the title
 (setq dashboard-banner-logo-title "Welcome to Emacs Dashboard")
 ;; Set the banner
-(setq dashboard-startup-banner [VALUE])
+;; (setq dashboard-startup-banner [VALUE])
 ;; Value can be
 ;; 'official which displays the official emacs logo
 ;; 'logo which displays an alternative emacs logo
@@ -315,7 +320,7 @@
 (define-key company-active-map (kbd "C-p") 'company-select-previous)
 
 ;; ---------------------------------------------------
-;; Vertico
+;; Vertico TODO
 ;; ---------------------------------------------------
 (use-package vertico
   :init
@@ -824,7 +829,7 @@ Supports exporting consult-grep to wgrep, file to wdeired, and consult-location 
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(custom-safe-themes
-   '("f7fed1aadf1967523c120c4c82ea48442a51ac65074ba544a5aefc5af490893b" "353ffc8e6b53a91ac87b7e86bebc6796877a0b76ddfc15793e4d7880976132ae" "d268b67e0935b9ebc427cad88ded41e875abfcc27abd409726a92e55459e0d01" "8146edab0de2007a99a2361041015331af706e7907de9d6a330a3493a541e5a6" "e19ac4ef0f028f503b1ccafa7c337021834ce0d1a2bca03fcebc1ef635776bea" "835868dcd17131ba8b9619d14c67c127aa18b90a82438c8613586331129dda63" "0466adb5554ea3055d0353d363832446cd8be7b799c39839f387abb631ea0995" "a0be7a38e2de974d1598cf247f607d5c1841dbcef1ccd97cded8bea95a7c7639" "1bddd01e6851f5c4336f7d16c56934513d41cc3d0233863760d1798e74809b4b" "47db50ff66e35d3a440485357fb6acb767c100e135ccdf459060407f8baea7b2" "1d5e33500bc9548f800f9e248b57d1b2a9ecde79cb40c0b1398dec51ee820daf" "a226e096b9c4924c93b920ba50e545fb2d37c6d95d6b62b44e62cb6f03b081fa" default))
+   '("02f57ef0a20b7f61adce51445b68b2a7e832648ce2e7efb19d217b6454c1b644" "aec7b55f2a13307a55517fdf08438863d694550565dee23181d2ebd973ebd6b8" "f7fed1aadf1967523c120c4c82ea48442a51ac65074ba544a5aefc5af490893b" "353ffc8e6b53a91ac87b7e86bebc6796877a0b76ddfc15793e4d7880976132ae" "d268b67e0935b9ebc427cad88ded41e875abfcc27abd409726a92e55459e0d01" "8146edab0de2007a99a2361041015331af706e7907de9d6a330a3493a541e5a6" "e19ac4ef0f028f503b1ccafa7c337021834ce0d1a2bca03fcebc1ef635776bea" "835868dcd17131ba8b9619d14c67c127aa18b90a82438c8613586331129dda63" "0466adb5554ea3055d0353d363832446cd8be7b799c39839f387abb631ea0995" "a0be7a38e2de974d1598cf247f607d5c1841dbcef1ccd97cded8bea95a7c7639" "1bddd01e6851f5c4336f7d16c56934513d41cc3d0233863760d1798e74809b4b" "47db50ff66e35d3a440485357fb6acb767c100e135ccdf459060407f8baea7b2" "1d5e33500bc9548f800f9e248b57d1b2a9ecde79cb40c0b1398dec51ee820daf" "a226e096b9c4924c93b920ba50e545fb2d37c6d95d6b62b44e62cb6f03b081fa" default))
  '(package-selected-packages
    '(modern-cpp-font-lock ranger dashboard winum highlight-indent-guides evil-surround auto-highlight-symbol rg hungry-delete tabbar consult-projectile tree-sitter treemacs magit hydra projectile general doom-themes helpful vscode-dark-plus-theme which-key rainbow-delimiters doom-modeline command-log-mode use-package consult embark marginalia orderless vertico keycast company)))
 (custom-set-faces
