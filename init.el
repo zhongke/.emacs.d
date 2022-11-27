@@ -38,6 +38,31 @@
 (setq use-package-always-ensure t)
 
 ;; ---------------------------------------------------
+;; PATH
+;; ---------------------------------------------------
+;;(setenv "PATH" (concat (getenv "PATH") ":/Users/kevinzhong/.cargo/bin:/usr/local/bin"))
+;; (setq exec-path (append exec-path '("/usr/local/bin", "/Users/kevinzhong/.cargo/bin")))
+
+;; (defun set-exec-path-from-shell-PATH ()
+;;   "Set up Emacs' `exec-path' and PATH environment variable to match
+;; that used by the user's shell.
+;; 
+;; This is particularly useful under Mac OS X and macOS, where GUI
+;; apps are not started from a shell."
+;;   (interactive)
+;;   (let ((path-from-shell (replace-regexp-in-string
+;; 			  "[ \t\n]*$" "" (shell-command-to-string
+;; 					  "$SHELL --login -c 'echo $PATH'"
+;; 						    ))))
+;;     (setenv "PATH" path-from-shell)
+;;     (setq exec-path (split-string path-from-shell path-separator))))
+;; 
+;; (set-exec-path-from-shell-PATH)
+
+(add-to-list 'exec-path "/usr/local/bin")
+(add-to-list 'exec-path "/Users/kevinzhong/.cargo/bin")
+
+;; ---------------------------------------------------
 ;; evil
 ;; ---------------------------------------------------
 (defun rune/evil-hook()
@@ -111,11 +136,14 @@
 ;; General
 ;; ui
 ;; ---------------------------------------------------
+(setq-default fill-column 100)
+
 (setq scroll-conservatively 101)
 (savehist-mode t)
 
 (setq inhibit-startup-message t)
 (setq inhibit-startup-screen t)
+
 
 (column-number-mode)
 (global-display-line-numbers-mode t)
@@ -138,7 +166,7 @@
 
 (tool-bar-mode -1)
 (tooltip-mode -1)
-;; (scroll-bar-mode -1)
+(scroll-bar-mode -1)
 ;; (fringe-mode 10)
 (menu-bar-mode -1)
 
@@ -613,28 +641,28 @@ Supports exporting consult-grep to wgrep, file to wdeired, and consult-location 
 ;; ---------------------------------------------------
 ;; Nox
 ;; ---------------------------------------------------
-(add-to-list 'load-path "/home/ezhonke/git/nox/")
-
-(require 'posframe)
-(require 'nox)
-
-(add-to-list 'nox-server-programs '((c++-mode c-mode) . ("clangd"  "--background-index=false")))
-
-(dolist (hook (list
-                ;; 'js-mode-hook
-                ;; 'rust-mode-hook
-                ;; 'python-mode-hook
-                ;; 'ruby-mode-hook
-                ;; 'java-mode-hook
-                ;; 'sh-mode-hook
-                ;; 'php-mode-hook
-                'c-mode-common-hook
-                'c-mode-hook
-                ;; 'csharp-mode-hook
-                'c++-mode-hook
-                ;; 'haskell-mode-hook
-                ))
-(add-hook hook '(lambda () (nox-ensure))))
+;; (add-to-list 'load-path "/home/ezhonke/git/nox/")
+;; 
+;; (require 'posframe)
+;; (require 'nox)
+;; 
+;; (add-to-list 'nox-server-programs '((c++-mode c-mode) . ("clangd"  "--background-index=false")))
+;; 
+;; (dolist (hook (list
+;;                 ;; 'js-mode-hook
+;;                 ;; 'rust-mode-hook
+;;                 ;; 'python-mode-hook
+;;                 ;; 'ruby-mode-hook
+;;                 ;; 'java-mode-hook
+;;                 ;; 'sh-mode-hook
+;;                 ;; 'php-mode-hook
+;;                 'c-mode-common-hook
+;;                 'c-mode-hook
+;;                 ;; 'csharp-mode-hook
+;;                 'c++-mode-hook
+;;                 ;; 'haskell-mode-hook
+;;                 ))
+;; (add-hook hook '(lambda () (nox-ensure))))
 
 
 
@@ -666,32 +694,31 @@ Supports exporting consult-grep to wgrep, file to wdeired, and consult-location 
 
 
 
-;; (use-package lsp-mode
-;;   :init
-;;   ;; set prefix for lsp-command-keymap (few alternatives - "C-l", "C-c l")
-;;   (setq lsp-keymap-prefix "C-c l")
-;;   :hook (;; replace XXX-mode with concrete major-mode(e. g. python-mode)
-;;          (go-mode . lsp)
-;;          ;; if you want which-key integration
-;;          (lsp-mode . lsp-enable-which-key-integration))
-;;   :commands lsp)
-;; 
-;; ;; optionally
-;; (use-package lsp-ui :commands lsp-ui-mode)
-;; ;; if you are helm user
+;; ---------------------------------------------------
+;; lsp-mode
+;; ---------------------------------------------------
+(use-package lsp-mode
+  :init
+  ;; set prefix for lsp-command-keymap (few alternatives - "C-l", "C-c l")
+  (setq lsp-keymap-prefix "C-c l")
+  :hook (;; replace XXX-mode with concrete major-mode(e. g. python-mode)
+         (go-mode . lsp)
+         (rust-mode . lsp)
+         ;; if you want which-key integration
+         (lsp-mode . lsp-enable-which-key-integration))
+  :commands lsp)
+
+;; optionally
+(use-package lsp-ui :commands lsp-ui-mode)
+;; if you are helm user
 ;; (use-package helm-lsp :commands helm-lsp-workspace-symbol)
-;; ;; if you are ivy user
+;; if you are ivy user
 ;; (use-package lsp-ivy :commands lsp-ivy-workspace-symbol)
-;; (use-package lsp-treemacs :commands lsp-treemacs-errors-list)
-;; 
-;; ;; optionally if you want to use debugger
-;; (use-package dap-mode)
-;; ;; (use-package dap-LANGUAGE) to load the dap adapter for your language
-;; 
-;; ;; optional if you want which-key integration
-;; (use-package which-key
-;;     :config
-;;     (which-key-mode))
+(use-package lsp-treemacs :commands lsp-treemacs-errors-list)
+
+;; optionally if you want to use debugger
+(use-package dap-mode)
+;; (use-package dap-LANGUAGE) to load the dap adapter for your language
 
 
 ;; ---------------------------------------------------
@@ -825,6 +852,17 @@ Supports exporting consult-grep to wgrep, file to wdeired, and consult-location 
 
 
 ;; ---------------------------------------------------
+;; rust-mode
+;; ---------------------------------------------------
+(use-package rust-mode
+  :ensure t
+  :config
+  ;; (setq rust-format-on-save t)
+  (setq indent-tabs-mode nil)
+  (setq lsp-rust-server 'rust-analyzer)
+  )
+
+;; ---------------------------------------------------
 ;; 
 ;; ---------------------------------------------------
 
@@ -840,7 +878,7 @@ Supports exporting consult-grep to wgrep, file to wdeired, and consult-location 
  '(custom-safe-themes
    '("02f57ef0a20b7f61adce51445b68b2a7e832648ce2e7efb19d217b6454c1b644" "aec7b55f2a13307a55517fdf08438863d694550565dee23181d2ebd973ebd6b8" "f7fed1aadf1967523c120c4c82ea48442a51ac65074ba544a5aefc5af490893b" "353ffc8e6b53a91ac87b7e86bebc6796877a0b76ddfc15793e4d7880976132ae" "d268b67e0935b9ebc427cad88ded41e875abfcc27abd409726a92e55459e0d01" "8146edab0de2007a99a2361041015331af706e7907de9d6a330a3493a541e5a6" "e19ac4ef0f028f503b1ccafa7c337021834ce0d1a2bca03fcebc1ef635776bea" "835868dcd17131ba8b9619d14c67c127aa18b90a82438c8613586331129dda63" "0466adb5554ea3055d0353d363832446cd8be7b799c39839f387abb631ea0995" "a0be7a38e2de974d1598cf247f607d5c1841dbcef1ccd97cded8bea95a7c7639" "1bddd01e6851f5c4336f7d16c56934513d41cc3d0233863760d1798e74809b4b" "47db50ff66e35d3a440485357fb6acb767c100e135ccdf459060407f8baea7b2" "1d5e33500bc9548f800f9e248b57d1b2a9ecde79cb40c0b1398dec51ee820daf" "a226e096b9c4924c93b920ba50e545fb2d37c6d95d6b62b44e62cb6f03b081fa" default))
  '(package-selected-packages
-   '(markdown-mode modern-cpp-font-lock ranger dashboard winum highlight-indent-guides evil-surround auto-highlight-symbol rg hungry-delete tabbar consult-projectile tree-sitter treemacs magit hydra projectile general doom-themes helpful vscode-dark-plus-theme which-key rainbow-delimiters doom-modeline command-log-mode use-package consult embark marginalia orderless vertico keycast company)))
+   '(dap-mode lsp-treemacs lsp-ui lsp-mode markdown-mode modern-cpp-font-lock ranger dashboard winum highlight-indent-guides evil-surround auto-highlight-symbol rg hungry-delete tabbar consult-projectile tree-sitter treemacs magit hydra projectile general doom-themes helpful vscode-dark-plus-theme which-key rainbow-delimiters doom-modeline command-log-mode use-package consult embark marginalia orderless vertico keycast company)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
