@@ -6,6 +6,7 @@
 ;; consult-ripgrep
 ;; -- keyword -g *.cc
 ;; -- keyword -t cpp 
+;; #find-term -- -g *.c
 ;; C-[
 ;; C-t
 ;; M-?
